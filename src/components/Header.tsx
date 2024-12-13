@@ -1,17 +1,64 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 
 import { Popover, Transition } from '@headlessui/react';
-import { MenuIcon, XIcon } from '@heroicons/react/outline';
+import {
+  MenuIcon,
+  XIcon,
+  UserIcon,
+  LogoutIcon,
+} from '@heroicons/react/outline';
 import { Link } from 'react-scroll';
 
+import Login from './Login';
 import config from '../config/index.json';
 
 const Menu = () => {
   const { navigation, company, callToAction } = config;
   const { name: companyName, logo } = company;
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isUserLoggedOut, setIsUserLoggedOut] = useState(false); // New state to handle logout success message
+
+  const handleLoginOpen = () => {
+    setIsLoginOpen(true);
+  };
+
+  const handleLoginClose = () => {
+    setIsLoginOpen(false);
+  };
+
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setIsUserLoggedOut(true); // Set logout success message
+    setTimeout(() => setIsUserLoggedOut(false), 1500); // Hide message after 3 seconds
+  };
 
   return (
     <>
+      {isLoginOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <Login
+            onLoginSuccess={handleLoginSuccess}
+            onClose={handleLoginClose}
+          />
+        </div>
+      )}
+
+      {/* Success message for logout */}
+      {isUserLoggedOut && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg">
+            <p className="text-green-600 font-bold text-center">
+              Logged Out Successfully!
+            </p>
+          </div>
+        </div>
+      )}
+
       <svg
         className={`hidden lg:block absolute right-0 inset-y-0 h-full w-48 text-background transform translate-x-1/2`}
         fill="currentColor"
@@ -44,7 +91,8 @@ const Menu = () => {
                 </div>
               </div>
             </div>
-            <div className="hidden md:block md:ml-10 md:pr-4 md:space-x-8">
+
+            <div className="hidden md:flex md:ml-10 md:pr-4 md:space-x-8 items-center">
               {navigation.map((item) => (
                 <Link
                   spy={true}
@@ -58,6 +106,28 @@ const Menu = () => {
                   {item.name}
                 </Link>
               ))}
+              {!isLoggedIn ? (
+                <button
+                  onClick={handleLoginOpen}
+                  className="ml-4 px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary-dark rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  Login
+                </button>
+              ) : (
+                <div className="flex items-center space-x-4">
+                  <button className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md">
+                    <UserIcon className="h-5 w-5 mr-2" />
+                    Profile
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-md"
+                  >
+                    <LogoutIcon className="h-5 w-5 mr-2" />
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           </nav>
         </div>
@@ -105,13 +175,29 @@ const Menu = () => {
                     {item.name}
                   </Link>
                 ))}
+                {!isLoggedIn ? (
+                  <button
+                    onClick={handleLoginOpen}
+                    className="block w-full px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                  >
+                    Login
+                  </button>
+                ) : (
+                  <>
+                    <button className="block w-full px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 flex items-center">
+                      <UserIcon className="h-5 w-5 mr-2" />
+                      Profile
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full px-3 py-2 rounded-md text-base font-medium text-red-600 hover:text-red-900 hover:bg-red-50 flex items-center"
+                    >
+                      <LogoutIcon className="h-5 w-5 mr-2" />
+                      Logout
+                    </button>
+                  </>
+                )}
               </div>
-              <a
-                href={callToAction.href}
-                className={`block w-full px-5 py-3 text-center font-medium text-primary bg-gray-50 hover:bg-gray-100`}
-              >
-                {callToAction.text}
-              </a>
             </div>
           </Popover.Panel>
         </Transition>
