@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 
 import About from '../components/About';
@@ -6,36 +8,31 @@ import Canvas from '../components/Canvas';
 import Gallery from '../components/Gallery';
 import Header from '../components/Header';
 import LazyShow from '../components/LazyShow';
-import Login from '../components/Login';
 import MainHero from '../components/MainHero';
 import MainHeroImage from '../components/MainHeroImage';
 import Product from '../components/Product';
 
 const App = () => {
-  const [isLoginOpen, setIsLoginOpen] = useState(false); // Track login modal visibility
+  const [isAdmin, setIsAdmin] = useState(false); // Track admin status
 
-  const handleLoginSuccess = () => {
-    setIsLoginOpen(false);
-  };
+  const handleAdminLogin = () => setIsAdmin(true); // Set admin status on login success
+  const handleAdminLogout = () => setIsAdmin(false); // Reset admin status on logout
 
   return (
-    <div className={`bg-background grid gap-y-16 overflow-hidden`}>
-      {/* Login Modal */}
-      {isLoginOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <Login
-            onLoginSuccess={handleLoginSuccess}
-            onClose={() => setIsLoginOpen(false)}
-          />
-        </div>
-      )}
+    <div className='bg-background grid gap-y-16 overflow-hidden'>
+      {/* Header */}
+      <Header
+        onAdminLogin={handleAdminLogin}
+        onAdminLogout={handleAdminLogout}
+        isAdmin={isAdmin}
+      />
 
-      <div className={`relative bg-background`}>
-        <div className="max-w-10xl mx-auto">
+      {/* Main Sections */}
+      <div className='relative bg-background'>
+        <div className='max-w-10xl mx-auto'>
           <div
-            className={`relative z-10 pb-8 bg-background sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32`}
+            className='relative z-10 pb-8 bg-background sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32'
           >
-            <Header />
             <MainHero />
           </div>
         </div>
@@ -43,7 +40,7 @@ const App = () => {
       </div>
       <Canvas />
       <LazyShow>
-        <Product />
+        <Product isAdmin={isAdmin} />
       </LazyShow>
       <LazyShow>
         <Gallery />

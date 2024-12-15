@@ -3,9 +3,13 @@ import React, { useState } from 'react';
 import Divider from './Divider';
 import config from '../config/index.json';
 
-const Product: React.FC = () => {
+interface ProductProps {
+  isAdmin: boolean; // Prop to check if the user is an admin
+}
+
+const Product: React.FC<ProductProps> = ({ isAdmin }) => {
   const { product } = config;
-  const [firstItem, secondItem] = product.items;
+  const [items, setItems] = useState(product.items); // Manage events dynamically
   const [rsvpStatus, setRsvpStatus] = useState<{ [key: string]: boolean }>({});
   const [notification, setNotification] = useState<string | null>(null);
 
@@ -21,6 +25,29 @@ const Product: React.FC = () => {
 
     // Hide notification after 3 seconds
     setTimeout(() => setNotification(null), 3000);
+  };
+
+  const handleAddEvent = () => {
+    const newEvent = {
+      title: `New Event ${items.length + 1}`,
+      description: 'Description for new event',
+      img: '/assets/images/default-event.jpg', // Default image path
+    };
+    setItems([...items, newEvent]);
+  };
+
+  const handleEditEvent = (index: number) => {
+    const updatedItems = [...items];
+    updatedItems[index] = {
+      ...updatedItems[index],
+      title: `${updatedItems[index].title} (Edited)`,
+    };
+    setItems(updatedItems);
+  };
+
+  const handleDeleteEvent = (index: number) => {
+    const filteredItems = items.filter((_, i) => i !== index);
+    setItems(filteredItems);
   };
 
   return (
@@ -44,55 +71,59 @@ const Product: React.FC = () => {
           ))}
         </h1>
         <Divider />
-        <div className="flex flex-wrap">
-          {/* First Event */}
-          <div className="w-full sm:w-1/2 p-6 mt-20">
-            <h3 className="text-3xl text-gray-800 font-bold leading-none mb-3">
-              {firstItem?.title}
-            </h3>
-            <p className="text-gray-600 mb-6">{firstItem?.description}</p>
-            <button
-              className="px-6 py-2 text-white bg-primary hover:bg-primary-dark rounded-md"
-              onClick={() => handleRsvp(firstItem?.title || '')}
-            >
-              {rsvpStatus[firstItem?.title || '']
-                ? 'Cancel RSVP'
-                : 'RSVP for Event'}
-            </button>
-          </div>
-          <div className="w-full sm:w-1/2 p-6">
-            <img
-              className="rounded-lg"
-              src={firstItem?.img}
-              alt={firstItem?.title}
-            />
-          </div>
-        </div>
 
-        <div className="flex flex-wrap flex-col-reverse sm:flex-row">
-          {/* Second Event */}
-          <div className="w-full sm:w-1/2 p-6">
-            <img
-              className="rounded-lg"
-              src={secondItem?.img}
-              alt={secondItem?.title}
-            />
-          </div>
-          <div className="w-full sm:w-1/2 p-6 mt-20">
-            <h3 className="text-3xl text-gray-800 font-bold leading-none mb-3">
-              {secondItem?.title}
-            </h3>
-            <p className="text-gray-600 mb-6">{secondItem?.description}</p>
+        {isAdmin && (
+          <div className="mb-6 flex justify-end">
             <button
-              className="px-6 py-2 text-white bg-primary hover:bg-primary-dark rounded-md"
-              onClick={() => handleRsvp(secondItem?.title || '')}
+              onClick={handleAddEvent}
+              className="px-6 py-2 text-white bg-green-500 hover:bg-green-600 rounded-md"
             >
-              {rsvpStatus[secondItem?.title || '']
-                ? 'Cancel RSVP'
-                : 'RSVP for Event'}
+              Add Event
             </button>
           </div>
-        </div>
+        )}
+
+        {items.map((item, index) => (
+          <div key={index} className="flex flex-wrap mb-8">
+            <div className="w-full sm:w-1/2 p-6">
+              <h3 className="text-3xl text-gray-800 font-bold leading-none mb-3">
+                {item.title}
+              </h3>
+              <p className="text-gray-600 mb-6">{item.description}</p>
+              <button
+                className="px-6 py-2 text-white bg-primary hover:bg-primary-dark rounded-md"
+                onClick={() => handleRsvp(item.title)}
+              >
+                {rsvpStatus[item.title]
+                  ? 'Cancel RSVP'
+                  : 'RSVP for Event'}
+              </button>
+              {isAdmin && (
+                <div className="mt-4 flex space-x-4">
+                  <button
+                    onClick={() => handleEditEvent(index)}
+                    className="px-6 py-2 text-white bg-yellow-500 hover:bg-yellow-600 rounded-md"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteEvent(index)}
+                    className="px-6 py-2 text-white bg-red-500 hover:bg-red-600 rounded-md"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="w-full sm:w-1/2 p-6">
+              <img
+                className="rounded-lg"
+                src={item.img}
+                alt={item.title}
+              />
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
