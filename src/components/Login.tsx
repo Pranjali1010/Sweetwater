@@ -6,7 +6,7 @@ import ForgotPassword from './ForgotPassword';
 import Signup from './Signup';
 
 interface LoginProps {
-  onLoginSuccess: (isAdmin: boolean) => void; // Prop to differentiate user and admin login
+  onLoginSuccess: (userData: { name: string; email: string; memberSince: string }, isAdminLogin: boolean) => void;
   onClose: () => void;
 }
 
@@ -46,14 +46,16 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess, onClose }) => {
 
     // Admin login check
     if (email === 'admin@example.com' && password === 'admin123') {
-      onLoginSuccess(true); // Admin login success
+      const adminData = { name: 'Admin', email: 'admin@example.com', memberSince: '2024-01-01' }; // Example admin data
+      onLoginSuccess(adminData, true); // Admin login success
       onClose();
       return;
     }
 
     // Regular user login
     if (email && password) {
-      onLoginSuccess(false); // User login success
+      const userData = { name: 'User', email: email, memberSince: '2024-01-01' }; // Example user data
+      onLoginSuccess(userData, false); // User login success
       onClose();
     } else {
       setError('Invalid email or password');
