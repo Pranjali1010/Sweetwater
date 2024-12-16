@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import About from '../components/About';
 import Analytics from '../components/Analytics';
 import Canvas from '../components/Canvas';
+import EventsPage from '../components/Feedback';
 import Gallery from '../components/Gallery';
 import Header from '../components/Header';
 import LazyShow from '../components/LazyShow';
@@ -44,9 +45,11 @@ const App = () => {
       </LazyShow>
       <LazyShow>
         <Gallery />
+        <EventsPage />
         <Canvas />
-        <About />
       </LazyShow>
+
+      <About />
       <Analytics />
     </div>
   );
