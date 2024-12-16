@@ -29,12 +29,26 @@
       {
         "title": "Sound Explorers: Hands-On Music Technology Workshop",
         "description": "Dive into the world of music production and technology in this interactive workshop. Students will learn the basics of recording, mixing, and editing sound using industry-standard equipment. No prior experience is required—just bring your creativity and curiosity!",
-        "img": "/assets/images/product1.jpg"
+        "img": "/assets/images/Event.jpg",
+        "location": "Sweetwater Sound Headquarters, Fort Wayne, IN",
+        "date": "July 10, 2024",
+        "time": "1:00 PM - 4:00 PM"
       },
       {
         "title": "Careers in Music: Pathways to Success",
         "description": "This seminar connects students with industry professionals to explore the diverse career opportunities in music. From production and performance to business and tech, attendees will gain valuable insights and practical advice to kickstart their journey in the music industry.",
-        "img": "/assets/images/product2.jpg"
+        "img": "/assets/images/Event2.png",
+        "location": "Sweetwater Sound Headquarters, Fort Wayne, IN",
+        "date": "August 12, 2024",
+        "time": "10:00 AM - 12:00 PM"
+      },
+      {
+        "title": "Sweetwater GuitarFest",
+        "description": "The largest music gear event of the year, featuring guitar demos, workshops, and live performances.",
+        "img": "/assets/images/Event3.jpg",
+        "location": "Sweetwater Sound Headquarters, Fort Wayne, IN",
+        "date": "July 15, 2024",
+        "time": "10:00 AM - 6:00 PM"
       }
     ]
   },
