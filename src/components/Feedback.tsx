@@ -17,11 +17,27 @@ const EventsPage: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const validateForm = () => {
+    if (!formData.eventTitle) {
+      setErrorMessage('Please select an event.');
+      return false;
+    }
+    if (!formData.feedback.trim()) {
+      setErrorMessage('Please provide your feedback.');
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage('');
+
+    if (!validateForm()) return;
+
     try {
-      // Here you can send data to the server or API
-      console.log(formData);
+      // Simulate successful submission
+      console.log('Form submitted:', formData);
       setSubmitted(true);
     } catch (error) {
       setErrorMessage('Something went wrong. Please try again.');
