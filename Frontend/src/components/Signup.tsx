@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 import { EyeIcon, EyeOffIcon, LockClosedIcon, MailIcon, UserIcon } from '@heroicons/react/solid';
 
@@ -11,6 +12,7 @@ const Signup: React.FC<SignupProps> = ({ onSignupSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('student');
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -53,22 +55,22 @@ const Signup: React.FC<SignupProps> = ({ onSignupSuccess }) => {
     }
 
     try {
-      console.log('Signup attempted', { name, email, password });
-      
-      // Call onSignupSuccess if provided
-      if (onSignupSuccess) {
-        onSignupSuccess();
-      }
+      // API call to register the user
+      const response = await axios.post('http://localhost:5001/api/users/register', {
+        name,
+        email,
+        password,
+        role,
+      });
 
-      // Reset form
-      setName('');
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
-      setError('');
+      if (response && response.data) {
+        console.log('Signup successful:', response.data);
+        if (onSignupSuccess) onSignupSuccess(); // Trigger callback
+        alert('Signup successful! You can now log in.'); // Optional: Display a success message
+      }
     } catch (err: any) {
-      setError(err.message || 'Signup failed. Please try again.');
-      console.error(err);
+      console.error('Signup error:', err);
+      setError(err.response?.data?.message || 'Signup failed. Please try again.');
     }
   };
 

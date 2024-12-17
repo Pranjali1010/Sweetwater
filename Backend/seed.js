@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const bcrypt = require('bcryptjs');
 const User = require('./models/User');
 const Event = require('./models/Event');
 const RSVP = require('./models/RSVP');
@@ -37,7 +38,7 @@ const users = [
 // Events data with `img` field
 const events = [
     {
-        title: "Sound Explorers: Hands-On Music Technology Workshop",
+        title: "Sound Explorers: Hands-On Music Technology Workshp",
         description: "Dive into the world of music production and technology in this interactive workshop. Students will learn the basics of recording, mixing, and editing sound using industry-standard equipment. No prior experience is required—just bring your creativity and curiosity!",
         location: "Sweetwater Sound Headquarters, Fort Wayne, IN",
         date: new Date("2024-07-10"),
@@ -79,8 +80,14 @@ const seedDB = async () => {
         await Feedback.deleteMany();
         console.log('Existing data cleared.');
 
-        // Insert Users
-        const createdUsers = await User.insertMany(users);
+        // Hash passwords and insert users
+        const hashedUsers = await Promise.all(
+            users.map(async (user) => {
+                const hashedPassword = await bcrypt.hash(user.password, 10);
+                return { ...user, password: hashedPassword };
+            })
+        );
+        const createdUsers = await User.insertMany(hashedUsers);
         console.log('Users added.');
 
         // Assign Admin as the creator for events

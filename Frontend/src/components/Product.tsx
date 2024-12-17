@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
 import Divider from './Divider';
-import config from '../config/index.json';
+import api from '../config/api';
 
 interface ProductProps {
   isAdmin: boolean; // Prop to check if the user is an admin
 }
 
 const Product: React.FC<ProductProps> = ({ isAdmin }) => {
-  const { product } = config;
-  const [items, setItems] = useState(product.items); // Manage events dynamically
+  const [items, setItems] = useState<any[]>([]); // Manage events dynamically
   const [rsvpStatus, setRsvpStatus] = useState<{ [key: string]: boolean }>({});
   const [notification, setNotification] = useState<string | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null); // State for the selected event
@@ -25,6 +23,20 @@ const Product: React.FC<ProductProps> = ({ isAdmin }) => {
     time: '',
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null); // For showing image preview
+
+  // Fetch events dynamically from the API
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await api.get('/events');
+        setItems(response.data); // Set fetched events dynamically
+      } catch (error) {
+        console.error('Error fetching events:', error);
+        setNotification('Failed to load events. Please try again later.');
+      }
+    };
+    fetchEvents();
+  }, []);
 
   const handleRsvp = (title: string) => {
     const newStatus = !rsvpStatus[title];
@@ -94,13 +106,13 @@ const Product: React.FC<ProductProps> = ({ isAdmin }) => {
     if (selectedEvent) {
       // Edit existing event (update by ID)
       const updatedItems = items.map((item) =>
-        item.id === selectedEvent.id ? { ...item, ...newEvent } : item
+        item._id === selectedEvent._id ? { ...item, ...newEvent } : item
       );
       setItems(updatedItems);
     } else {
       // Add new event
       const newEventData = {
-        id: items.length + 1, // Assuming unique IDs
+        _id: `${items.length + 1}`, // Assuming unique IDs
         ...newEvent,
       };
       setItems([...items, newEventData]);
@@ -138,14 +150,7 @@ const Product: React.FC<ProductProps> = ({ isAdmin }) => {
           </div>
         )}
         <h1 className="w-full my-2 text-5xl font-bold leading-tight text-center text-primary">
-          {product.title.split(' ').map((word, index) => (
-            <span
-              key={index}
-              className={index % 2 ? 'text-primary' : 'text-border'}
-            >
-              {word}{' '}
-            </span>
-          ))}
+          Events
         </h1>
         <Divider />
 
@@ -163,7 +168,7 @@ const Product: React.FC<ProductProps> = ({ isAdmin }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {items.map((item, index) => (
             <div
-              key={index}
+              key={item._id}
               className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col cursor-pointer"
               onClick={() => openModal(item)} // Open modal when event is clicked
             >

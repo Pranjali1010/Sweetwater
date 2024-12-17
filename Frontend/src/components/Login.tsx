@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios'; // Import Axios
 
 import { EyeIcon, EyeOffIcon, LockClosedIcon, MailIcon } from '@heroicons/react/solid';
 
@@ -6,7 +7,7 @@ import ForgotPassword from './ForgotPassword';
 import Signup from './Signup';
 
 interface LoginProps {
-  onLoginSuccess: (userData: { name: string; email: string; memberSince: string }, isAdminLogin: boolean) => void;
+  onLoginSuccess: (userData: { name: string; email: string; role: string }, isAdminLogin: boolean) => void;
   onClose: () => void;
 }
 
@@ -44,21 +45,22 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess, onClose }) => {
       return;
     }
 
-    // Admin login check
-    if (email === 'admin@example.com' && password === 'admin123') {
-      const adminData = { name: 'Admin', email: 'admin@example.com', memberSince: '2024-01-01' }; // Example admin data
-      onLoginSuccess(adminData, true); // Admin login success
-      onClose();
-      return;
-    }
+    try {
+      // API POST request for login
+      const response = await axios.post('http://localhost:5001/api/users/login', {
+        email,
+        password,
+      });
 
-    // Regular user login
-    if (email && password) {
-      const userData = { name: 'User', email: email, memberSince: '2024-01-01' }; // Example user data
-      onLoginSuccess(userData, false); // User login success
-      onClose();
-    } else {
-      setError('Invalid email or password');
+      if (response && response.data) {
+        const { name, email, role } = response.data; // Extract name, email, role
+        const isAdmin = role === 'admin'; // Check if role is 'admin'
+        onLoginSuccess({ name, email, role }, isAdmin); // Pass the role and user data
+        onClose();
+      }
+    } catch (err: any) {
+      console.error('Login error:', err);
+      setError(err.response?.data?.message || 'Invalid email or password');
     }
   };
 
