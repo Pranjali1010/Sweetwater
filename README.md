@@ -3,9 +3,10 @@
 ## Overview
 
 This project is built using:
-- **React**: A JavaScript library for building user interfaces.
-- **Next.js**: A React framework with server-side rendering (SSR) and static site generation (SSG).
+- **Frontend - React**: A JavaScript library for building user interfaces.
+- **Backend - Node.js Expressjs**: Backend for the application
 - **TypeScript**: A typed superset of JavaScript for better code maintainability.
+- **Database - MongoDB**: We decided to use a non-relational Database.
 
 ---
 
@@ -50,7 +51,7 @@ Copy code
 yarn install
 Run the Development Server
 
-Start the Next.js development server:
+Start the React.js development server:
 
 With npm:
 
@@ -64,55 +65,10 @@ Copy code
 yarn dev
 The server will run at http://localhost:3000.
 
-Build the Project for Production
-
-Create an optimized production build:
-
-bash
-Copy code
-npm run build
-To run the production build:
-
-bash
-Copy code
-npm start
-Available Scripts
-The following scripts are available:
-
-npm run dev: Start the development server.
-npm run build: Create a production build.
-npm start: Start the production server.
-npm run lint: Lint the codebase.
-Folder Structure
-bash
-Copy code
-.
-├── pages/             # Next.js pages and routes
-│   ├── _app.tsx       # Custom App component
-│   ├── index.tsx      # Main page (home)
-│   └── api/           # API routes
-├── public/            # Static assets
-├── styles/            # CSS or SCSS styles
-├── components/        # Reusable React components
-├── tsconfig.json      # TypeScript configuration
-├── package.json       # Project configuration and scripts
-└── README.md          # Project documentation
-Technologies Used
-React: Component-based UI development.
-Next.js: Framework for SSR, SSG, and API routes.
-TypeScript: Type-safe development.
-CSS/SCSS: For styling.
-
-------
-
 #Command to run Backend(Run this command under Backend)
 
 npm start
 
-#Command to run frontend(Run this command under Frontend)
-
-npm run dev
-
-#coomand to populate the data in Mongo DB(Run this command under Backend)
+#Command to populate the data in Mongo DB(Run this command under Backend)
 
 node seed.js
