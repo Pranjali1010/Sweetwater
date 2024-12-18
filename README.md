@@ -1,4 +1,4 @@
-# React + TypeScript + Next.js Project
+# Sweetwater Fort Wayne Student Opportunities Application
 
 ## Overview
 
